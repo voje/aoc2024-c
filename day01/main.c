@@ -63,6 +63,9 @@ int readInput(const char *input, int* left, int* right) {
 
         token = strtok(NULL, " \n");
     }
+
+    free(token);
+    free(iinput);
     return nextL;
 }
 
@@ -98,6 +101,9 @@ int day01a(const char* input) {
     for (size_t i=0; i<outLen; i++) {
         res += abs(left[i] - right[i]);
     }
+
+    free(left);
+    free(right);
     return res;
 }
 
@@ -132,6 +138,10 @@ int day01b(const char* input) {
     for (size_t i=0; i<outLen; i++) {
         res += left[i] * occurrences[left[i]];
     }
+
+    free(left);
+    free(right);
+    free(occurrences);
     return res;
 }
 

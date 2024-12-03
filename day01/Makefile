@@ -5,6 +5,9 @@ TARGET = $(OUTDIR)/main
 run: $(TARGET)
 	./$(TARGET)
 
+valgrind: $(TARGET)
+	valgrind --track-origins=yes ./$(TARGET)
+
 build: $(TARGET)
 
 $(TARGET): clean
