@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <ctype.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
@@ -40,8 +39,6 @@ int readInput(const char *input, int* left, int* right) {
     char *iinput = strdup(input);
 
     token = strtok(iinput, " \n");
-    // left[nextL] = atoi(token);
-    // nextL++;
 
     while (token != NULL) {
         #ifdef DEBUG
@@ -66,7 +63,7 @@ int readInput(const char *input, int* left, int* right) {
 
         token = strtok(NULL, " \n");
     }
-    return nextL - 1;
+    return nextL;
 }
 
 int comp(const void* a, const void *b) {
@@ -104,38 +101,65 @@ int day01a(const char* input) {
     return res;
 }
 
+int day01b(const char* input) {
+    size_t outLen = 100000;  // init size
+    int* left = calloc(outLen, sizeof(int));
+    int* right = calloc(outLen, sizeof(int));
+    outLen = readInput(input, left, right);
+
+    #ifdef DEBUG
+    printArr(left, outLen);
+    printArr(right, outLen);
+    #endif
+
+    int max = 0;
+    for (size_t i=0; i<outLen; i++) {
+        if (right[i] > max) { max = right[i]; }
+    }
+
+    int *occurrences = calloc(max+1, sizeof(int));
+    for (size_t i=0; i<outLen; i++) {
+        occurrences[right[i]]++;
+    }
+
+    #ifdef DEBUG
+    printf("Occurrences\n");
+    printArr(occurrences, max+1);
+    #endif
+
+    // Calculate da01b result
+    int res = 0;
+    for (size_t i=0; i<outLen; i++) {
+        res += left[i] * occurrences[left[i]];
+    }
+    return res;
+}
+
 int main() {
-
-    int res = day01a(example);
-    assert(res == 11);
-    printf("Example result: %d (assert passed)\n", res); 
-
-    // Day01 a 
+    // Read input
     FILE *f = fopen("./inputs/a.txt", "r");
     if (f == NULL) {
         printf("Can't open file\n");
         return OOPS;
     }
-    // Get file size
     size_t fileSize;
     fseek(f, 0, SEEK_END);
     fileSize = ftell(f);
     fseek(f, 0, SEEK_SET);
     printf("Input file size is: %zu b\n", fileSize);
-
     char inputA[fileSize];
     size_t r = fread(inputA, 1, fileSize, f);
-    printf("Read: %zu b\n", r);
+    fclose(f);
 
-    res = day01a(inputA);
-    printf("Day01/a result: %d\n", res);
+    printf("Part1\n------------\n");
+    assert(day01a(example) == 11);
+    assert(day01a(inputA) == 1938424);
+    printf("Day01/a result: %d\n", day01a(inputA));
 
-    // If I cange variable name res, result changes.
-    // If I add 'resa', both the previous res and resa change to a wrong
-    // result.
-    // C is fun...
-    int resa = day01a(inputA);
-    printf("Day01/a result: %d\n", resa);
+    printf("Part2\n------------\n");
+    assert(day01b(example) == 31);
+    assert(day01b(inputA) == 22014209);
+    printf("Day01/b result: %d\n", day01b(inputA));
 
     return 0;
 }
