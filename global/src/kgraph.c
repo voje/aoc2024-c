@@ -1,4 +1,5 @@
 #include "kgraph.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,6 +44,41 @@ void freeVertex(Vertex* v) {
 void addVertex(DGraph* dg, Vertex* ver) {
     dg->vertices[dg->verticesLen] = ver;
     dg->verticesLen++;
+}
+
+void addEdge(Vertex* from, Vertex* to) {
+    from->oe[from->oelen] = to;
+    from->oelen++;
+    to->ie[to->ielen] = from;
+    from->ielen++;
+}
+
+// Returns new array length
+size_t removeVertexFromArray(Vertex* v, Vertex** arr, size_t arrlen) {
+    int removing = 0;
+    if (v == arr[arrlen-1]) {
+        return arrlen-1;
+    }
+    for (size_t i=0; i<arrlen-1; i++) {
+        if (!removing && arr[i] == v) {
+            removing = 1;
+        }
+        if (removing) {
+            arr[i] = arr[i+1];
+        }
+    }
+    return arrlen-removing;
+}
+
+// This function will fail if edge doesn't exist
+void rmEdge(Vertex* from, Vertex* to) {
+    size_t newLen = removeVertexFromArray(to, from->oe, from->oelen);
+    assert(newLen == from->oelen-1);
+    from->oelen = newLen;
+
+    newLen = removeVertexFromArray(from, to->ie, to->ielen);
+    assert(newLen == to->ielen-1);
+    from->ielen = newLen;
 }
 
 Vertex* findVertex(DGraph* dg, int value) {

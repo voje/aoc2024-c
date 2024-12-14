@@ -31,5 +31,6 @@ void addVertex(DGraph* dg, Vertex* ver);
 Vertex* findVertex(DGraph* dg, int value);
 
 void removeVertex(DGraph* dg, Vertex* ver);
+void removeEdge(Vertex* from, Vertex* to);
 
 #endif
