@@ -1,0 +1,4 @@
+# Needed by clang (neovim LSP) to include our 
+# libraries
+
+-Iglobal/include
